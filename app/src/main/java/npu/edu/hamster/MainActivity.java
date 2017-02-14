@@ -15,19 +15,35 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    ArrayList<NPU_Event> eventList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         RecyclerView recList=(RecyclerView)findViewById(R.id.main_recycler);
-        recList.setHasFixedSize(true);
-        LinearLayoutManager llm=new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
+        eventList=new ArrayList<>();
+        NPU_Event event=new NPU_Event();
+        event.setMonth("Feb");
+        event.setDay("20");
+        event.setContent("Mid-term exams\n");
+        eventList.add(event);
+        NPU_Event event2=new NPU_Event();
+        event2.setMonth("Feb");
+        event2.setDay("27");
+        event2.setContent("Deadline for change program,\ngraduation petition for 2017 summer\nsemester (without late fee)\n");
+        eventList.add(event2);
+        MainRecyclerViewAdapter adapter=new MainRecyclerViewAdapter(this,eventList);
+        recList.setAdapter(adapter);
+        recList.setLayoutManager(new LinearLayoutManager(this));
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
