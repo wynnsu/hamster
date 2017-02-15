@@ -1,13 +1,14 @@
-package npu.edu.hamster;
+package npu.edu.hamster.module;
 
 /**
  * Created by su153 on 2/14/2017.
  */
 
-public class NPU_Event {
+public class EventModule implements CardModule {
     protected String month;
     protected String day;
     protected String content;
+    private ContentType type;
 
     public String getMonth() {
         return month;
@@ -31,5 +32,15 @@ public class NPU_Event {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public ContentType getContentType() {
+        return type;
+    }
+
+    @Override
+    public void setContentType(ContentType type) {
+        this.type = type;
     }
 }
