@@ -16,9 +16,8 @@
         android:id="@+id/imageView"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         app:srcCompat="@mipmap/ic_npu"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:elevation="2dp" />
+        android:layout_height="60dp"
+        android:layout_width="60dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -31,6 +30,6 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="wynnsu@gmail.com" />
+        android:text="cs595E Capstone Project" />
 
 </LinearLayout>
