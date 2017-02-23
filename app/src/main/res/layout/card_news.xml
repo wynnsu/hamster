@@ -1,33 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:padding="16dp">
-    <android:android.support.v7.widget.CardView
-        layout_width="match_parent"
-        layout_height="wrap_content"
+<android:android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    layout_height="wrap_content"
+    layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginBottom="5dp"
+    cardview:cardCornerRadius="2dp"
+    cardview:cardElevation="3dp">
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
             android:id="@+id/news_image"
-            android:layout_alignParentTop="true"
-            />
-        <TextView android:layout_width="match_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/news_title"
-            android:layout_below="@+id/news_image"
-            android:layout_marginTop="10dp"
-            android:textSize="24sp"
-            android:text="Title"/>
-        <TextView android:layout_width="match_parent"
+            android:scaleType="centerCrop"/>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/news_content"
-            android:layout_below="@+id/news_title"
-            android:layout_marginTop="6dp"
-            android:textSize="14sp"
-            android:text="Content of news goes here"/>
-
-
-    </android:android.support.v7.widget.CardView>
-</RelativeLayout>
+            android:orientation="vertical"
+            android:paddingLeft="8dp"
+            android:layout_marginTop="16dp">
+            <TextView
+                android:id="@+id/news_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="24sp" />
+            <TextView
+                android:id="@+id/news_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="20dp"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+</android:android.support.v7.widget.CardView>

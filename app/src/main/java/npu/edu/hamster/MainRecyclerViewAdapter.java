@@ -5,12 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import npu.edu.hamster.module.CardModule;
 import npu.edu.hamster.module.EventModule;
+import npu.edu.hamster.module.NewsModule;
 
 /**
  * Created by su153 on 2/14/2017.
@@ -42,6 +46,8 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         switch (type) {
             case EVENT:
                 return EVENT;
+            case NEWS:
+                return NEWS;
             default:
                 return -1;
         }
@@ -58,6 +64,13 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 eventHolder.vMonth.setText(event.getMonth());
                 eventHolder.vContent.setText(event.getContent());
                 break;
+            case NEWS:
+                NewsModule news = (NewsModule) module;
+                NewsViewHolder newsHolder = (NewsViewHolder) holder;
+                newsHolder.vTitle.setText(news.getTitle());
+                newsHolder.vContent.setText(news.getContent());
+                Picasso.with(context).load(news.getImgUrl()).into(newsHolder.vImg);
+                break;
             default:
                 break;
         }
@@ -72,6 +85,10 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             case EVENT:
                 View eventView = inflater.inflate(R.layout.card_event, parent, false);
                 holder = new EventViewHolder(eventView);
+                break;
+            case NEWS:
+                View newsView = inflater.inflate(R.layout.card_news, parent, false);
+                holder = new NewsViewHolder(newsView);
                 break;
             default:
                 holder = null;
@@ -93,5 +110,17 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    public static class NewsViewHolder extends RecyclerView.ViewHolder {
+        protected ImageView vImg;
+        protected TextView vTitle;
+        protected TextView vContent;
+
+        public NewsViewHolder(View v) {
+            super(v);
+            vImg = (ImageView) v.findViewById(R.id.news_image);
+            vTitle = (TextView) v.findViewById(R.id.news_title);
+            vContent = (TextView) v.findViewById(R.id.news_content);
+        }
+    }
 
 }
