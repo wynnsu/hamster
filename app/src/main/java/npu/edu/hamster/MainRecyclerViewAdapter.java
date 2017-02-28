@@ -12,7 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import npu.edu.hamster.module.CardModule;
+import npu.edu.hamster.module.BaseModule;
+import npu.edu.hamster.module.CardContent;
 import npu.edu.hamster.module.EventModule;
 import npu.edu.hamster.module.NewsModule;
 
@@ -22,11 +23,11 @@ import npu.edu.hamster.module.NewsModule;
 
 public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<CardModule> cardList;
+    private List<BaseModule> cardList;
     private Context context;
-    private final int EVENT = 0, NEWS = 1, GRADE = 2, HOMEWORK = 3, COURSE = 4;
+    private final int EVENT = 0, NEWS = 1, GRADE = 2, HOMEWORK = 3, COURSE = 4, LOGIN = 5;
 
-    public MainRecyclerViewAdapter(Context context, List<CardModule> list) {
+    public MainRecyclerViewAdapter(Context context, List<BaseModule> list) {
         this.cardList = list;
         this.context = context;
     }
@@ -42,12 +43,14 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        CardModule.ContentType type = cardList.get(position).getContentType();
+        CardContent.ContentType type = cardList.get(position).getContentType();
         switch (type) {
             case EVENT:
                 return EVENT;
             case NEWS:
                 return NEWS;
+            case LOGIN:
+                return LOGIN;
             default:
                 return -1;
         }
@@ -55,7 +58,7 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        CardModule module = cardList.get(position);
+        CardContent module = cardList.get(position);
         switch (module.getContentType()) {
             case EVENT:
                 EventModule event = (EventModule) module;
@@ -70,6 +73,8 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 newsHolder.vTitle.setText(news.getTitle());
                 newsHolder.vContent.setText(news.getContent());
                 Picasso.with(context).load(news.getImgUrl()).into(newsHolder.vImg);
+                break;
+            case LOGIN:
                 break;
             default:
                 break;
@@ -89,6 +94,10 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             case NEWS:
                 View newsView = inflater.inflate(R.layout.card_news, parent, false);
                 holder = new NewsViewHolder(newsView);
+                break;
+            case LOGIN:
+                View loginView = inflater.inflate(R.layout.card_login, parent, false);
+                holder = new LoginViewHolder(loginView);
                 break;
             default:
                 holder = null;
@@ -120,6 +129,15 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             vImg = (ImageView) v.findViewById(R.id.news_image);
             vTitle = (TextView) v.findViewById(R.id.news_title);
             vContent = (TextView) v.findViewById(R.id.news_content);
+        }
+    }
+
+    public static class LoginViewHolder extends RecyclerView.ViewHolder {
+        protected ImageView vImg;
+
+        public LoginViewHolder(View v) {
+            super(v);
+            vImg = (ImageView) v.findViewById(R.id.login_img);
         }
     }
 

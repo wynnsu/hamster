@@ -6,4 +6,20 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="primary_text">24sp</dimen>
+    <dimen name="primary_text_top_padding">24dp</dimen>
+    <dimen name="primary_text_bottom_padding">16dp</dimen>
+    <dimen name="primary_text_right_left_padding">16dp</dimen>
+
+    <dimen name="subtext">14sp</dimen>
+    <dimen name="subtext_bottom_padding">16dp</dimen>
+    <dimen name="subtext_right_left_padding">16dp</dimen>
+
+    <dimen name="actions_padding">8dp</dimen>
+
+    <dimen name="supporting_text">14sp</dimen>
+    <dimen name="supporting_text_top_padding">16dp</dimen>
+    <dimen name="supporting_text_bottom_padding">24dp</dimen>
+    <dimen name="supporting_text_right_left_padding">16dp</dimen>
 </resources>

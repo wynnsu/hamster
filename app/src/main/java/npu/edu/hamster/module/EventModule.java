@@ -4,7 +4,7 @@ package npu.edu.hamster.module;
  * Created by su153 on 2/14/2017.
  */
 
-public class EventModule implements CardModule {
+public class EventModule extends BaseModule {
     protected String month;
     protected String day;
     protected String content;

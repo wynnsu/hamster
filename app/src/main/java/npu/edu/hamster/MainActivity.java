@@ -11,31 +11,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
 import npu.edu.hamster.client.NPURestClient;
-import npu.edu.hamster.module.CardModule;
+import npu.edu.hamster.client.ResponseHandler;
+import npu.edu.hamster.module.BaseModule;
 import npu.edu.hamster.module.EventModule;
 import npu.edu.hamster.module.NewsModule;
+import npu.edu.hamster.module.LoginModule;
+
+import static npu.edu.hamster.module.CardContent.ContentType.EVENT;
+import static npu.edu.hamster.module.CardContent.ContentType.NEWS;
+import static npu.edu.hamster.module.CardContent.ContentType.LOGIN;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ArrayList<CardModule> moduleList;
+    ArrayList<BaseModule> moduleList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +44,7 @@ public class MainActivity extends AppCompatActivity
 
         final EventModule event = new EventModule();
         final NewsModule news = new NewsModule();
+        final LoginModule login = new LoginModule();
         final MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(this, moduleList);
         cardList.setAdapter(adapter);
         cardList.setLayoutManager(new LinearLayoutManager(this));
@@ -74,60 +71,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        NPURestClient.get("news", null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                try {
-                    JSONObject firstNews = (JSONObject) response.get(0);
+        NPURestClient.get("news", null, new ResponseHandler(NEWS, news, moduleList, adapter));
+        NPURestClient.get("event", null, new ResponseHandler(EVENT, event, moduleList, adapter));
+        login.setContentType(LOGIN);
+        moduleList.add(login);
 
-                    news.setTitle(firstNews.getString("title"));
-                    news.setImgUrl(firstNews.getString("imageUrl"));
-                    news.setContent(firstNews.getString("content"));
-                    news.setContentType(CardModule.ContentType.NEWS);
-                    moduleList.add(news);
-                    adapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    Log.d("HttpClient", e.getMessage());
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.e("HttpClient", "Failure with response: " + responseString);
-                if (throwable.getCause() instanceof ConnectTimeoutException) {
-                    Log.d("HttpClient", throwable.getMessage());
-                }
-            }
-        });
-
-        NPURestClient.get("event", null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                try {
-                    JSONObject firstEvent = (JSONObject) response.get(0);
-//                    EventModule event = new EventModule();
-
-                    String[] date = firstEvent.getString("date").split("-");
-                    event.setMonth(new DateFormatSymbols().getMonths()[Integer.parseInt(date[1])]);
-                    event.setDay(date[2]);
-                    event.setContent(firstEvent.getString("content"));
-                    event.setContentType(CardModule.ContentType.EVENT);
-                    moduleList.add(event);
-                    adapter.notifyDataSetChanged();
-
-                } catch (JSONException e) {
-                    Log.d("HttpClient", e.getMessage());
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.e("HttpClient", "Failure with response: " + responseString);
-                if (throwable.getCause() instanceof ConnectTimeoutException) {
-                    Log.d("HttpClient", throwable.getMessage());
-                }
-            }
-        });
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -4,7 +4,7 @@ package npu.edu.hamster.module;
  * Created by su153 on 2/14/2017.
  */
 
-public class NewsModule implements CardModule {
+public class NewsModule extends BaseModule {
     protected String title;
     protected String imgUrl;
     protected String content;

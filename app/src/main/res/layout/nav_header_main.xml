@@ -15,7 +15,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/ic_npu"
+        app:srcCompat="@drawable/ic_perm_identity_black_24dp"
         android:layout_height="60dp"
         android:layout_width="60dp" />
 

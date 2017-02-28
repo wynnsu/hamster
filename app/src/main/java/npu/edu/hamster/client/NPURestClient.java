@@ -1,7 +1,5 @@
 package npu.edu.hamster.client;
 
-import android.util.Log;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -15,9 +13,7 @@ public class NPURestClient {
     private static AsyncHttpClient client = new AsyncHttpClient();
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Log.d("HttpClient","Start getting data from"+getAbsoluteUrl(url));
         client.get(getAbsoluteUrl(url), params, responseHandler);
-        Log.d("HttpClient","Finish getting data: "+responseHandler.toString());
     }
 
     public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
