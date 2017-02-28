@@ -1,10 +1,12 @@
 package npu.edu.hamster;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -75,6 +77,7 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 Picasso.with(context).load(news.getImgUrl()).into(newsHolder.vImg);
                 break;
             case LOGIN:
+
                 break;
             default:
                 break;
@@ -134,10 +137,20 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public static class LoginViewHolder extends RecyclerView.ViewHolder {
         protected ImageView vImg;
+        protected Button vButton;
+        protected TextView vText;
 
         public LoginViewHolder(View v) {
             super(v);
             vImg = (ImageView) v.findViewById(R.id.login_img);
+            vText = (TextView) v.findViewById(R.id.login_text);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), LoginActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+            });
         }
     }
 

@@ -1,5 +1,6 @@
 package npu.edu.hamster.client;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
+import npu.edu.hamster.MainActivity;
 import npu.edu.hamster.MainRecyclerViewAdapter;
 import npu.edu.hamster.module.BaseModule;
 import npu.edu.hamster.module.CardContent;
@@ -27,12 +29,14 @@ public class ResponseHandler extends JsonHttpResponseHandler {
     private BaseModule module;
     private ArrayList<BaseModule> moduleList;
     private MainRecyclerViewAdapter adapter;
+    private Context context;
 
-    public ResponseHandler(CardContent.ContentType type, BaseModule module, ArrayList<BaseModule> moduleList, MainRecyclerViewAdapter adapter) {
+    public ResponseHandler(Context context, CardContent.ContentType type, BaseModule module, ArrayList<BaseModule> moduleList, MainRecyclerViewAdapter adapter) {
         this.type = type;
         this.module = module;
         this.moduleList = moduleList;
-        this.adapter=adapter;
+        this.adapter = adapter;
+        this.context = context;
     }
 
     @Override
@@ -47,9 +51,7 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                     event.setDay(date[2]);
                     event.setContent(firstObject.getString("content"));
                     event.setContentType(CardContent.ContentType.EVENT);
-                    moduleList.add(0,event);
-                    sendFinishMessage();
-                    adapter.notifyDataSetChanged();
+                    moduleList.add(0, event);
                     break;
                 case NEWS:
                     NewsModule news = (NewsModule) module;
@@ -57,13 +59,16 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                     news.setImgUrl(firstObject.getString("imageUrl"));
                     news.setContent(firstObject.getString("content"));
                     news.setContentType(CardContent.ContentType.NEWS);
-                    moduleList.add(0,news);
-                    adapter.notifyDataSetChanged();
+                    moduleList.add(0, news);
                     break;
                 default:
                     break;
             }
-
+            if (moduleList.size() >= 3) {
+                MainActivity activity = (MainActivity) context;
+                activity.showProgress(false);
+                adapter.notifyDataSetChanged();
+            }
         } catch (JSONException e) {
             Log.d("HttpClient", e.getMessage());
         }

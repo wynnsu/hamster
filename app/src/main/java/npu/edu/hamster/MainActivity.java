@@ -1,5 +1,9 @@
 package npu.edu.hamster;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,17 +25,19 @@ import npu.edu.hamster.client.NPURestClient;
 import npu.edu.hamster.client.ResponseHandler;
 import npu.edu.hamster.module.BaseModule;
 import npu.edu.hamster.module.EventModule;
-import npu.edu.hamster.module.NewsModule;
 import npu.edu.hamster.module.LoginModule;
+import npu.edu.hamster.module.NewsModule;
 
 import static npu.edu.hamster.module.CardContent.ContentType.EVENT;
-import static npu.edu.hamster.module.CardContent.ContentType.NEWS;
 import static npu.edu.hamster.module.CardContent.ContentType.LOGIN;
+import static npu.edu.hamster.module.CardContent.ContentType.NEWS;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     ArrayList<BaseModule> moduleList;
+    private View mRecyclerView;
+    private View mProgressView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +47,16 @@ public class MainActivity extends AppCompatActivity
 
         RecyclerView cardList = (RecyclerView) findViewById(R.id.main_recycler);
         moduleList = new ArrayList<>();
+        mProgressView = findViewById(R.id.main_progress);
+        mRecyclerView = findViewById(R.id.main_recycler);
 
-        final EventModule event = new EventModule();
-        final NewsModule news = new NewsModule();
-        final LoginModule login = new LoginModule();
-        final MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(this, moduleList);
+        showProgress(true);
+
+        EventModule event = new EventModule();
+        NewsModule news = new NewsModule();
+        LoginModule login = new LoginModule();
+        MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(this, moduleList);
+
         cardList.setAdapter(adapter);
         cardList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -71,12 +82,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        NPURestClient.get("news", null, new ResponseHandler(NEWS, news, moduleList, adapter));
-        NPURestClient.get("event", null, new ResponseHandler(EVENT, event, moduleList, adapter));
+        NPURestClient.get("news", null, new ResponseHandler(this, NEWS, news, moduleList, adapter));
+        NPURestClient.get("event", null, new ResponseHandler(this, EVENT, event, moduleList, adapter));
         login.setContentType(LOGIN);
         moduleList.add(login);
-
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -134,5 +143,38 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRecyclerView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
     }
 }

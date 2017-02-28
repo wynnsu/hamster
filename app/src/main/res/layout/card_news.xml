@@ -7,8 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="8dp"
     cardview:cardCornerRadius="2dp"
+    cardview:cardUseCompatPadding="true"
     cardview:cardElevation="3dp"
     card_view:cardBackgroundColor="@color/colorWhite">
 

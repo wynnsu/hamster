@@ -23,4 +23,5 @@
         completions."
     </string>
     <string name="title_activity_t">Sign in</string>
+    <string name="title_activity_tt">Sign in</string>
 </resources>
