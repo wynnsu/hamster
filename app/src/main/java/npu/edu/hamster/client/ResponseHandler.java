@@ -81,4 +81,13 @@ public class ResponseHandler extends JsonHttpResponseHandler {
             Log.d("HttpClient", throwable.getMessage());
         }
     }
+
+    @Override
+    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+        Log.e("HttpClient", "Failure to get response");
+        if (throwable.getCause() instanceof ConnectTimeoutException) {
+            Log.d("HttpClient", throwable.getMessage());
+        }
+    }
+
 }
