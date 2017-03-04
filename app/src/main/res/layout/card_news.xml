@@ -9,7 +9,7 @@
     android:layout_gravity="center"
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="4dp"
     cardview:cardCornerRadius="2dp"
     cardview:cardUseCompatPadding="true"
     cardview:cardElevation="3dp"
