@@ -84,8 +84,10 @@ public class MainActivity extends AppCompatActivity
 
         NPURestClient.get("news", null, new ResponseHandler(this, NEWS, news, moduleList, adapter));
         NPURestClient.get("event", null, new ResponseHandler(this, EVENT, event, moduleList, adapter));
-        login.setContentType(LOGIN);
-        moduleList.add(login);
+        NPURestClient.get("student",null,new ResponseHandler(this,LOGIN,login,moduleList,adapter));
+//        login.setContentType(LOGIN);
+//        moduleList.add(login);
+
     }
 
     @Override

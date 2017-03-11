@@ -3,6 +3,7 @@ package npu.edu.hamster;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,7 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 Picasso.with(context).load(news.getImgUrl()).into(newsHolder.vImg);
                 break;
             case LOGIN:
-
+                System.out.println("LOGIN onBindViewHolder");
                 break;
             default:
                 break;
@@ -149,6 +150,8 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), LoginActivity.class);
                     v.getContext().startActivity(intent);
+                    boolean result=intent.getBooleanExtra("Success",false);
+                    Log.i("LOGIN","result:"+result);
                 }
             });
         }
