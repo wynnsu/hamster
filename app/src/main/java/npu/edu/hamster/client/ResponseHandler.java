@@ -1,6 +1,7 @@
 package npu.edu.hamster.client;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -68,6 +69,12 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                     login.setImgUrl("welcome");
                     module = login;
                     break;
+                case LOGIN:
+                    LoginModule login=(LoginModule)module;
+//                    if(firstObject)
+                    login.setContent("Click to login with your student ID and password to unlock student portal.");
+                    login.setImgUrl("");
+                    moduleList.add(login);
                 default:
                     break;
             }
