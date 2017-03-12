@@ -10,68 +10,98 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
-import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
-import npu.edu.hamster.MainActivity;
 import npu.edu.hamster.MainRecyclerViewAdapter;
 import npu.edu.hamster.module.BaseModule;
 import npu.edu.hamster.module.CardContent;
 import npu.edu.hamster.module.EventModule;
+import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
+
+import static npu.edu.hamster.module.CardContent.EVENT;
+import static npu.edu.hamster.module.CardContent.LOGIN;
 
 /**
  * Created by su153 on 2/26/2017.
  */
 public class ResponseHandler extends JsonHttpResponseHandler {
-    private CardContent.ContentType type;
     private BaseModule module;
-    private ArrayList<BaseModule> moduleList;
     private MainRecyclerViewAdapter adapter;
     private Context context;
+    private int position;
 
-    public ResponseHandler(Context context, CardContent.ContentType type, BaseModule module, ArrayList<BaseModule> moduleList, MainRecyclerViewAdapter adapter) {
-        this.type = type;
+    public ResponseHandler(Context context, BaseModule module, int position, MainRecyclerViewAdapter adapter) {
         this.module = module;
-        this.moduleList = moduleList;
         this.adapter = adapter;
         this.context = context;
+        this.position = position;
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+        Log.i("SUCCESS", "array returned");
         try {
             JSONObject firstObject = response.getJSONObject(0);
+            int type = module.getType();
             switch (type) {
-                case EVENT:
+                case CardContent.EVENT:
                     EventModule event = (EventModule) module;
                     String[] date = firstObject.getString("date").split("-");
-                    event.setMonth(new DateFormatSymbols().getMonths()[Integer.parseInt(date[1])]);
+                    event.setMonth(new DateFormatSymbols().getMonths()[Integer.parseInt(date[1]) - 1]);
                     event.setDay(date[2]);
                     event.setContent(firstObject.getString("content"));
-                    event.setContentType(CardContent.ContentType.EVENT);
-                    moduleList.add(0, event);
+                    module = event;
                     break;
-                case NEWS:
+                case CardContent.NEWS:
                     NewsModule news = (NewsModule) module;
                     news.setTitle(firstObject.getString("title"));
                     news.setImgUrl(firstObject.getString("imageUrl"));
                     news.setContent(firstObject.getString("content"));
-                    news.setContentType(CardContent.ContentType.NEWS);
-                    moduleList.add(0, news);
+                    module = news;
+                    break;
+                case CardContent.LOGIN:
+                    LoginModule login = (LoginModule) module;
+                    String name = firstObject.getString("name");
+                    login.setContent("Welcome, " + name);
+                    login.setImgUrl("welcome");
+                    module = login;
                     break;
                 default:
                     break;
             }
-            if (moduleList.size() >= 3) {
-                MainActivity activity = (MainActivity) context;
-                activity.showProgress(false);
-                adapter.notifyDataSetChanged();
-            }
+            adapter.notifyItemChanged(position);
         } catch (JSONException e) {
             Log.d("HttpClient", e.getMessage());
         }
+    }
+
+    @Override
+    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        try {
+            int type = module.getType();
+            switch (type) {
+                case CardContent.LOGIN:
+                    LoginModule login = (LoginModule) module;
+                    String name = response.getString("name");
+                    login.setContent("Welcome, " + name + "!");
+                    login.setImgUrl("welcome");
+                    Log.i("SUCCESS", ((LoginModule) module).getContent());
+                    module = login;
+                    break;
+                default:
+                    break;
+            }
+            adapter.notifyItemChanged(position);
+        } catch (JSONException e) {
+            Log.d("HttpClient", e.getMessage());
+        }
+    }
+
+    @Override
+    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+        Log.i("SUCCESS", responseString);
     }
 
     @Override

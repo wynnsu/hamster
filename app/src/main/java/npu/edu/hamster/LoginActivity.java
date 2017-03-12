@@ -3,6 +3,7 @@ package npu.edu.hamster;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -161,6 +162,9 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
 
             if (success) {
+                Intent intent=getIntent();
+                intent.putExtra("id",mStudentID);
+                setResult(1,intent);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

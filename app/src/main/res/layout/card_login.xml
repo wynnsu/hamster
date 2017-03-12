@@ -34,10 +34,11 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:paddingTop="24dp"
-                    android:src="@drawable/ic_lock_outline_black_24dp" />
+                    android:src="@drawable/ic_lock" />
 
                 <TextView
                     android:id="@+id/login_text"
+                    android:textColor="@color/colorBlack"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/supporting_text_bottom_padding"

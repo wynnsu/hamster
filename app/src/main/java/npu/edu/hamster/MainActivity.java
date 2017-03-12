@@ -3,11 +3,10 @@ package npu.edu.hamster;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,38 +28,58 @@ import npu.edu.hamster.module.EventModule;
 import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
 
-import static npu.edu.hamster.module.CardContent.ContentType.EVENT;
-import static npu.edu.hamster.module.CardContent.ContentType.LOGIN;
-import static npu.edu.hamster.module.CardContent.ContentType.NEWS;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     ArrayList<BaseModule> moduleList;
-    private View mRecyclerView;
+    private RecyclerView mainRecyclerView;
     private View mProgressView;
+    private EventModule event;
+    private NewsModule news;
+    private LoginModule login;
+    private boolean isLogin;
+    private MainRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        RecyclerView cardList = (RecyclerView) findViewById(R.id.main_recycler);
+        isLogin = false;
+        mainRecyclerView = (RecyclerView) findViewById(R.id.main_recycler);
         moduleList = new ArrayList<>();
         mProgressView = findViewById(R.id.main_progress);
-        mRecyclerView = findViewById(R.id.main_recycler);
 
         showProgress(true);
 
-        EventModule event = new EventModule();
-        NewsModule news = new NewsModule();
-        LoginModule login = new LoginModule();
-        MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(this, moduleList);
+        event = new EventModule();
+        news = new NewsModule();
+        login = new LoginModule();
+        adapter = new MainRecyclerViewAdapter(this, moduleList);
 
-        cardList.setAdapter(adapter);
-        cardList.setLayoutManager(new LinearLayoutManager(this));
+        mainRecyclerView.setAdapter(adapter);
+        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if (viewHolder.getItemViewType() == 5) {
+
+                }
+                int position = viewHolder.getAdapterPosition();
+                moduleList.remove(position);
+                adapter.notifyItemRemoved(position);
+                adapter.notifyItemRangeChanged(position, moduleList.size());
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mainRecyclerView);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,10 +102,24 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        NPURestClient.get("news", null, new ResponseHandler(this, NEWS, news, moduleList, adapter));
-        NPURestClient.get("event", null, new ResponseHandler(this, EVENT, event, moduleList, adapter));
-        login.setContentType(LOGIN);
+        moduleList.add(news);
+        moduleList.add(event);
         moduleList.add(login);
+        NPURestClient.get("news", null, new ResponseHandler(this, news, moduleList.indexOf(news), adapter));
+        NPURestClient.get("event", null, new ResponseHandler(this, event, moduleList.indexOf(event), adapter));
+        login.setContent("Click to login with your student ID and password to unlock student portal.");
+        login.setImgUrl("lock");
+        showProgress(false);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MainRecyclerViewAdapter.LOGIN_REQUEST && resultCode == MainRecyclerViewAdapter.LOGIN_SUCCESS) {
+            String studentID = data.getStringExtra("id");
+            NPURestClient.get("student/" + studentID, null, new ResponseHandler(this, login, moduleList.indexOf(login), adapter));
+            adapter.notifyItemChanged(moduleList.indexOf(login));
+        }
     }
 
     @Override
@@ -153,12 +187,12 @@ public class MainActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mRecyclerView.animate().setDuration(shortAnimTime).alpha(
+            mainRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mainRecyclerView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mainRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -174,7 +208,7 @@ public class MainActivity extends AppCompatActivity
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mainRecyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 }

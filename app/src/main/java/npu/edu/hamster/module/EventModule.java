@@ -8,7 +8,6 @@ public class EventModule extends BaseModule {
     protected String month;
     protected String day;
     protected String content;
-    private ContentType type;
 
     public String getMonth() {
         return month;
@@ -35,12 +34,7 @@ public class EventModule extends BaseModule {
     }
 
     @Override
-    public ContentType getContentType() {
-        return type;
-    }
-
-    @Override
-    public void setContentType(ContentType type) {
-        this.type = type;
+    public int getType() {
+        return CardContent.EVENT;
     }
 }

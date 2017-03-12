@@ -8,7 +8,6 @@ public class NewsModule extends BaseModule {
     protected String title;
     protected String imgUrl;
     protected String content;
-    private ContentType type;
 
     public String getTitle() {
         return title;
@@ -35,12 +34,7 @@ public class NewsModule extends BaseModule {
     }
 
     @Override
-    public ContentType getContentType() {
-        return type;
-    }
-
-    @Override
-    public void setContentType(ContentType type) {
-        this.type = type;
+    public int getType() {
+        return CardContent.NEWS;
     }
 }

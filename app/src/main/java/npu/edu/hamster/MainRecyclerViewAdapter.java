@@ -1,12 +1,15 @@
 package npu.edu.hamster;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +20,12 @@ import java.util.List;
 import npu.edu.hamster.module.BaseModule;
 import npu.edu.hamster.module.CardContent;
 import npu.edu.hamster.module.EventModule;
+import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
+
+import static npu.edu.hamster.module.CardContent.EVENT;
+import static npu.edu.hamster.module.CardContent.LOGIN;
+import static npu.edu.hamster.module.CardContent.NEWS;
 
 /**
  * Created by su153 on 2/14/2017.
@@ -27,11 +35,14 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private List<BaseModule> cardList;
     private Context context;
-    private final int EVENT = 0, NEWS = 1, GRADE = 2, HOMEWORK = 3, COURSE = 4, LOGIN = 5;
+
+    public static int LOGIN_REQUEST = 0;
+    public static int LOGIN_SUCCESS = 1;
 
     public MainRecyclerViewAdapter(Context context, List<BaseModule> list) {
         this.cardList = list;
         this.context = context;
+        setHasStableIds(true);
     }
 
     private Context getContext() {
@@ -45,43 +56,62 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        CardContent.ContentType type = cardList.get(position).getContentType();
-        switch (type) {
-            case EVENT:
-                return EVENT;
-            case NEWS:
-                return NEWS;
-            case LOGIN:
-                return LOGIN;
-            default:
-                return -1;
-        }
+        return cardList.get(position).getType();
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        CardContent module = cardList.get(position);
-        switch (module.getContentType()) {
-            case EVENT:
+        Log.i("CALLING", "OnBindViewHolder, position=" + position);
+        BaseModule module = cardList.get(position);
+        switch (module.getType()) {
+            case CardContent.EVENT:
                 EventModule event = (EventModule) module;
                 EventViewHolder eventHolder = (EventViewHolder) holder;
                 eventHolder.vDay.setText(event.getDay());
                 eventHolder.vMonth.setText(event.getMonth());
                 eventHolder.vContent.setText(event.getContent());
                 break;
-            case NEWS:
+            case CardContent.NEWS:
                 NewsModule news = (NewsModule) module;
                 NewsViewHolder newsHolder = (NewsViewHolder) holder;
                 newsHolder.vTitle.setText(news.getTitle());
                 newsHolder.vContent.setText(news.getContent());
                 Picasso.with(context).load(news.getImgUrl()).into(newsHolder.vImg);
                 break;
-            case LOGIN:
-
+            case CardContent.LOGIN:
+                LoginModule login = (LoginModule) module;
+                LoginViewHolder loginHolder = (LoginViewHolder) holder;
+                loginHolder.vText.setText(login.getContent());
+                String url = login.getImgUrl();
+                Drawable res = null;
+                loginHolder.vImg.setImageDrawable(null);
+                if (url.endsWith("welcome")) {
+                    res = ContextCompat.getDrawable(context, R.drawable.ic_done);
+                    Log.i("CARD UPDATE", url);
+                    loginHolder.itemView.setOnClickListener(null);
+                } else if (url.endsWith("lock")) {
+                    res = ContextCompat.getDrawable(context, R.drawable.ic_lock);
+                    Log.i("CARD UPDATE", url);
+                    loginHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Activity a = (Activity) v.getContext();
+                            int request = LOGIN_REQUEST;
+                            Intent intent = new Intent(a, LoginActivity.class);
+                            a.startActivityForResult(intent, request);
+                        }
+                    });
+                }
+                loginHolder.vImg.setImageDrawable(res);
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return getItemViewType(position);
     }
 
     @Override
@@ -137,20 +167,12 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public static class LoginViewHolder extends RecyclerView.ViewHolder {
         protected ImageView vImg;
-        protected Button vButton;
         protected TextView vText;
 
         public LoginViewHolder(View v) {
             super(v);
             vImg = (ImageView) v.findViewById(R.id.login_img);
             vText = (TextView) v.findViewById(R.id.login_text);
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), LoginActivity.class);
-                    v.getContext().startActivity(intent);
-                }
-            });
         }
     }
 
