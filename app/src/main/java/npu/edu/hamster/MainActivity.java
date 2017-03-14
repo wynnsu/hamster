@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         moduleList.add(login);
         NPURestClient.get("news", null, new ResponseHandler(this, news, moduleList.indexOf(news), adapter));
         NPURestClient.get("event", null, new ResponseHandler(this, event, moduleList.indexOf(event), adapter));
-        login.setContent("Click to login with your student ID and password to unlock student portal.");
+        login.setContent(getString(R.string.login_prompt));
         login.setImgUrl("lock");
         showProgress(false);
     }
@@ -116,7 +117,12 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MainRecyclerViewAdapter.LOGIN_REQUEST && resultCode == MainRecyclerViewAdapter.LOGIN_SUCCESS) {
+            login.setImgUrl("login");
+            adapter.notifyItemChanged(moduleList.indexOf(login));
             String studentID = data.getStringExtra("id");
+            String base64Password = data.getStringExtra("password");
+            Log.i("ID", studentID);
+            Log.i("PASSWORD", base64Password);
             NPURestClient.get("student/" + studentID, null, new ResponseHandler(this, login, moduleList.indexOf(login), adapter));
             adapter.notifyItemChanged(moduleList.indexOf(login));
         }

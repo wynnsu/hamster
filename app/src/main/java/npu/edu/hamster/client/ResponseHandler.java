@@ -1,7 +1,6 @@
 package npu.edu.hamster.client;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -13,16 +12,13 @@ import org.json.JSONObject;
 import java.text.DateFormatSymbols;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
 import npu.edu.hamster.MainRecyclerViewAdapter;
+import npu.edu.hamster.R;
 import npu.edu.hamster.module.BaseModule;
 import npu.edu.hamster.module.CardContent;
 import npu.edu.hamster.module.EventModule;
 import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
-
-import static npu.edu.hamster.module.CardContent.EVENT;
-import static npu.edu.hamster.module.CardContent.LOGIN;
 
 /**
  * Created by su153 on 2/26/2017.
@@ -65,16 +61,10 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                 case CardContent.LOGIN:
                     LoginModule login = (LoginModule) module;
                     String name = firstObject.getString("name");
-                    login.setContent("Welcome, " + name);
+                    login.setContent(context.getString(R.string.login_success) + name);
                     login.setImgUrl("welcome");
                     module = login;
                     break;
-                case LOGIN:
-                    LoginModule login=(LoginModule)module;
-//                    if(firstObject)
-                    login.setContent("Click to login with your student ID and password to unlock student portal.");
-                    login.setImgUrl("");
-                    moduleList.add(login);
                 default:
                     break;
             }
@@ -114,17 +104,15 @@ public class ResponseHandler extends JsonHttpResponseHandler {
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
         Log.e("HttpClient", "Failure with response: " + responseString);
-        if (throwable.getCause() instanceof ConnectTimeoutException) {
-            Log.d("HttpClient", throwable.getMessage());
-        }
     }
 
     @Override
     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
         Log.e("HttpClient", "Failure to get response");
-        if (throwable.getCause() instanceof ConnectTimeoutException) {
-            Log.d("HttpClient", throwable.getMessage());
-        }
     }
 
+    @Override
+    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+        Log.e("HttpClient", "Failure to get response");
+    }
 }

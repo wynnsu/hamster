@@ -89,6 +89,9 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     res = ContextCompat.getDrawable(context, R.drawable.ic_done);
                     Log.i("CARD UPDATE", url);
                     loginHolder.itemView.setOnClickListener(null);
+                    loginHolder.vImg.setImageDrawable(res);
+                    loginHolder.vImg.setVisibility(View.VISIBLE);
+                    loginHolder.vProgress.setVisibility(View.GONE);
                 } else if (url.endsWith("lock")) {
                     res = ContextCompat.getDrawable(context, R.drawable.ic_lock);
                     Log.i("CARD UPDATE", url);
@@ -101,8 +104,11 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                             a.startActivityForResult(intent, request);
                         }
                     });
+                    loginHolder.vImg.setImageDrawable(res);
+                } else if (url.endsWith("login")) {
+                    loginHolder.vProgress.setVisibility(View.VISIBLE);
+                    loginHolder.vImg.setVisibility(View.GONE);
                 }
-                loginHolder.vImg.setImageDrawable(res);
                 break;
             default:
                 break;
@@ -168,11 +174,13 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public static class LoginViewHolder extends RecyclerView.ViewHolder {
         protected ImageView vImg;
         protected TextView vText;
+        protected View vProgress;
 
         public LoginViewHolder(View v) {
             super(v);
             vImg = (ImageView) v.findViewById(R.id.login_img);
             vText = (TextView) v.findViewById(R.id.login_text);
+            vProgress = v.findViewById(R.id.login_progress);
         }
     }
 

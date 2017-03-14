@@ -25,6 +25,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <ProgressBar
+                    android:id="@+id/login_progress"
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="24dp"
+                    android:visibility="gone" />
+
                 <ImageView
                     android:id="@+id/login_img"
                     android:layout_width="wrap_content"
@@ -38,7 +49,6 @@
 
                 <TextView
                     android:id="@+id/login_text"
-                    android:textColor="@color/colorBlack"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/supporting_text_bottom_padding"
@@ -46,6 +56,7 @@
                     android:paddingRight="@dimen/supporting_text_right_left_padding"
                     android:paddingTop="@dimen/supporting_text_top_padding"
                     android:text="Click to login with your student ID and password to unlock student portal."
+                    android:textColor="@color/colorBlack"
                     android:textSize="@dimen/supporting_text" />
             </LinearLayout>
 

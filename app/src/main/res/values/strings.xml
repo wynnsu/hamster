@@ -24,4 +24,6 @@
     </string>
     <string name="title_activity_t">Sign in</string>
     <string name="title_activity_tt">Sign in</string>
+    <string name="login_prompt">Click to login with your student ID and password to unlock student portal.</string>
+    <string name="login_success">Welcome, </string>
 </resources>
