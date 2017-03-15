@@ -7,13 +7,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="4dp"
+    android:layout_marginLeft="@dimen/card_margin_leftright"
+    android:layout_marginRight="@dimen/card_margin_leftright"
+    android:layout_marginTop="@dimen/card_margin_topbottom"
     cardview:cardUseCompatPadding="true"
     card_view:cardBackgroundColor="@color/colorWhite"
-    cardview:cardCornerRadius="2dp"
-    cardview:cardElevation="2dp">
+    cardview:cardCornerRadius="@dimen/card_radius"
+    cardview:cardElevation="@dimen/card_elevation">
 
     <RelativeLayout
         android:layout_width="match_parent"

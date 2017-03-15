@@ -40,7 +40,7 @@ public class ResponseHandler extends JsonHttpResponseHandler {
     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
         Log.i("SUCCESS", "array returned");
         try {
-            JSONObject firstObject = response.getJSONObject(0);aa
+            JSONObject firstObject = response.getJSONObject(0);
             int type = module.getType();
             switch (type) {
                 case CardContent.EVENT:
