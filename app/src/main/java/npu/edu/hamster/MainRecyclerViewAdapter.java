@@ -17,13 +17,19 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import npu.edu.hamster.module.ActivityModule;
+import npu.edu.hamster.module.AttendanceModule;
 import npu.edu.hamster.module.BaseModule;
 import npu.edu.hamster.module.CardContent;
 import npu.edu.hamster.module.EventModule;
+import npu.edu.hamster.module.GradeModule;
 import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
 
+import static npu.edu.hamster.module.CardContent.ACTIVITY;
+import static npu.edu.hamster.module.CardContent.ATTENDANCE;
 import static npu.edu.hamster.module.CardContent.EVENT;
+import static npu.edu.hamster.module.CardContent.GRADE;
 import static npu.edu.hamster.module.CardContent.LOGIN;
 import static npu.edu.hamster.module.CardContent.NEWS;
 
@@ -78,12 +84,27 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 newsHolder.vContent.setText(news.getContent());
                 Picasso.with(context).load(news.getImgUrl()).into(newsHolder.vImg);
                 break;
+            case CardContent.ATTENDANCE:
+                AttendanceModule attend = (AttendanceModule) module;
+                AttendanceViewHolder attendHolder = (AttendanceViewHolder) holder;
+                attendHolder.vContent.setText(attend.getContent());
+                break;
+            case CardContent.ACTIVITY:
+                ActivityModule activity = (ActivityModule) module;
+                ActivityViewHolder activityHolder = (ActivityViewHolder) holder;
+                activityHolder.vContent.setText(activity.getContent());
+                break;
+            case CardContent.GRADE:
+                GradeModule grade = (GradeModule) module;
+                GradeViewHolder gradeHolder = (GradeViewHolder) holder;
+                gradeHolder.vContent.setText(grade.getContent());
+                break;
             case CardContent.LOGIN:
                 LoginModule login = (LoginModule) module;
                 LoginViewHolder loginHolder = (LoginViewHolder) holder;
                 loginHolder.vText.setText(login.getContent());
                 String url = login.getImgUrl();
-                Drawable res = null;
+                Drawable res;
                 loginHolder.vImg.setImageDrawable(null);
                 if (url.endsWith("welcome")) {
                     res = ContextCompat.getDrawable(context, R.drawable.ic_done);
@@ -138,6 +159,18 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 View loginView = inflater.inflate(R.layout.card_login, parent, false);
                 holder = new LoginViewHolder(loginView);
                 break;
+            case ATTENDANCE:
+                View attendView = inflater.inflate(R.layout.card_attendance, parent, false);
+                holder = new AttendanceViewHolder(attendView);
+                break;
+            case GRADE:
+                View gradeView = inflater.inflate(R.layout.card_grade, parent, false);
+                holder = new GradeViewHolder(gradeView);
+                break;
+            case ACTIVITY:
+                View activityView = inflater.inflate(R.layout.card_activity, parent, false);
+                holder = new ActivityViewHolder(activityView);
+                break;
             default:
                 holder = null;
                 break;
@@ -181,6 +214,30 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             vImg = (ImageView) v.findViewById(R.id.login_img);
             vText = (TextView) v.findViewById(R.id.login_text);
             vProgress = v.findViewById(R.id.login_progress);
+        }
+    }
+    public static class AttendanceViewHolder extends RecyclerView.ViewHolder {
+        protected TextView vContent;
+
+        public AttendanceViewHolder(View v) {
+            super(v);
+            vContent = (TextView) v.findViewById(R.id.attendance_content);
+        }
+    }
+    public static class GradeViewHolder extends RecyclerView.ViewHolder {
+        protected TextView vContent;
+
+        public GradeViewHolder(View v) {
+            super(v);
+            vContent = (TextView) v.findViewById(R.id.grade_content);
+        }
+    }
+    public static class ActivityViewHolder extends RecyclerView.ViewHolder {
+        protected TextView vContent;
+
+        public ActivityViewHolder(View v) {
+            super(v);
+            vContent = (TextView) v.findViewById(R.id.activity_content);
         }
     }
 
