@@ -24,8 +24,12 @@ import java.util.ArrayList;
 
 import npu.edu.hamster.client.NPURestClient;
 import npu.edu.hamster.client.ResponseHandler;
+import npu.edu.hamster.module.ActivityModule;
+import npu.edu.hamster.module.AttendanceModule;
 import npu.edu.hamster.module.BaseModule;
+import npu.edu.hamster.module.CourseModule;
 import npu.edu.hamster.module.EventModule;
+import npu.edu.hamster.module.GradeModule;
 import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
 
@@ -38,6 +42,10 @@ public class MainActivity extends AppCompatActivity
     private EventModule event;
     private NewsModule news;
     private LoginModule login;
+    private AttendanceModule attend;
+    private GradeModule grade;
+    private ActivityModule activity;
+    private CourseModule course;
     private boolean isLogin;
     private MainRecyclerViewAdapter adapter;
 
@@ -56,6 +64,10 @@ public class MainActivity extends AppCompatActivity
         event = new EventModule();
         news = new NewsModule();
         login = new LoginModule();
+        attend=new AttendanceModule();
+        grade=new GradeModule();
+        activity=new ActivityModule();
+        course=new CourseModule();
         adapter = new MainRecyclerViewAdapter(this, moduleList);
 
         mainRecyclerView.setAdapter(adapter);
@@ -118,13 +130,19 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == MainRecyclerViewAdapter.LOGIN_REQUEST && resultCode == MainRecyclerViewAdapter.LOGIN_SUCCESS) {
             login.setImgUrl("login");
-            adapter.notifyItemChanged(moduleList.indexOf(login));
             String studentID = data.getStringExtra("id");
             String base64Password = data.getStringExtra("password");
             Log.i("ID", studentID);
             Log.i("PASSWORD", base64Password);
             NPURestClient.get("student/" + studentID, null, new ResponseHandler(this, login, moduleList.indexOf(login), adapter));
             adapter.notifyItemChanged(moduleList.indexOf(login));
+            moduleList.add(activity);
+            moduleList.add(grade);
+//            moduleList.add(attend);
+            NPURestClient.get("student/"+studentID+"/activity/coming",null,new ResponseHandler(this,activity,moduleList.indexOf(activity),adapter));
+            NPURestClient.get("student/"+studentID+"/grade/latest",null,new ResponseHandler(this,grade,moduleList.indexOf(grade),adapter));
+//            NPURestClient.get("student/"+studentID+"/attendance",null,new ResponseHandler(this,attend,moduleList.indexOf(attend),adapter));
+            adapter.notifyDataSetChanged();
         }
     }
 

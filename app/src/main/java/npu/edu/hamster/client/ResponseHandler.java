@@ -14,9 +14,12 @@ import java.text.DateFormatSymbols;
 import cz.msebera.android.httpclient.Header;
 import npu.edu.hamster.MainRecyclerViewAdapter;
 import npu.edu.hamster.R;
+import npu.edu.hamster.module.ActivityModule;
+import npu.edu.hamster.module.AttendanceModule;
 import npu.edu.hamster.module.BaseModule;
 import npu.edu.hamster.module.CardContent;
 import npu.edu.hamster.module.EventModule;
+import npu.edu.hamster.module.GradeModule;
 import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
 
@@ -42,6 +45,7 @@ public class ResponseHandler extends JsonHttpResponseHandler {
         try {
             JSONObject firstObject = response.getJSONObject(0);
             int type = module.getType();
+            StringBuilder sb;
             switch (type) {
                 case CardContent.EVENT:
                     EventModule event = (EventModule) module;
@@ -65,6 +69,16 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                     login.setImgUrl("welcome");
                     module = login;
                     break;
+                case CardContent.ATTENDANCE:
+                    AttendanceModule attend = (AttendanceModule) module;
+                    sb = new StringBuilder();
+                    for (int i = 0; i < response.length(); i++) {
+                        String str =(String) response.get(i);
+                        sb.append(str);
+                    }
+                    attend.setContent(sb.toString());
+                    module = attend;
+                    break;
                 default:
                     break;
             }
@@ -78,6 +92,7 @@ public class ResponseHandler extends JsonHttpResponseHandler {
     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
         try {
             int type = module.getType();
+            StringBuilder sb;
             switch (type) {
                 case CardContent.LOGIN:
                     LoginModule login = (LoginModule) module;
@@ -86,6 +101,13 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                     login.setImgUrl("welcome");
                     Log.i("SUCCESS", ((LoginModule) module).getContent());
                     module = login;
+                    break;
+                case CardContent.ACTIVITY:
+                    ActivityModule activity = (ActivityModule) module;
+                    sb = new StringBuilder();
+                    sb.append(response.getString("due"));
+                    activity.setContent(sb.toString());
+                    module = activity;
                     break;
                 default:
                     break;
@@ -98,12 +120,24 @@ public class ResponseHandler extends JsonHttpResponseHandler {
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, String responseString) {
-        Log.i("SUCCESS", responseString);
+        Log.e("HttpClient", "Success with String: " + responseString);
+
     }
 
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
         Log.e("HttpClient", "Failure with response: " + responseString);
+        int type = module.getType();
+        switch (type) {
+            case CardContent.GRADE:
+                GradeModule grade = (GradeModule) module;
+                grade.setContent(responseString);
+                module = grade;
+                break;
+            default:
+                break;
+        }
+        adapter.notifyItemChanged(position);
     }
 
     @Override
