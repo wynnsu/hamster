@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:id="@+id/attend_parent">
+
+    <TextView
+        android:id="@+id/attend_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CS123"
+        android:textColor="@color/colorGrey800"
+        android:textSize="@dimen/subtitle" />
+
+    <LinearLayout
+        android:id="@+id/attend_queue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    </LinearLayout>
+</LinearLayout>

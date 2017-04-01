@@ -11,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Map;
 
 import npu.edu.hamster.module.ActivityModule;
 import npu.edu.hamster.module.AttendanceModule;
@@ -69,6 +71,8 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Log.i("CALLING", "OnBindViewHolder, position=" + position);
         BaseModule module = cardList.get(position);
+        String url = "";
+        Drawable res;
         switch (module.getType()) {
             case CardContent.EVENT:
                 EventModule event = (EventModule) module;
@@ -87,27 +91,64 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             case CardContent.ATTENDANCE:
                 AttendanceModule attend = (AttendanceModule) module;
                 AttendanceViewHolder attendHolder = (AttendanceViewHolder) holder;
-                attendHolder.vContent.setText(attend.getContent());
+                if (attendHolder.vLayout.getChildCount() > 0) {
+                    break;
+                }
+                Map<String, String> map = attend.getAttendanceMap();
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View v = vi.inflate(R.layout.attendance_course, null);
+                    TextView title = (TextView) v.findViewById(R.id.attend_title);
+                    String key = entry.getKey();
+                    String val = entry.getValue();
+                    title.setText(key);
+                    LinearLayout layout = (LinearLayout) v.findViewById(R.id.attend_queue);
+                    String[] attendList = val.split(" ");
+                    for (String s : attendList) {
+                        View vb = vi.inflate(R.layout.attendance_block, null);
+                        ImageView iv = (ImageView) vb.findViewById(R.id.attend_icon_view);
+                        if (s.equals("P")) {
+                            iv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_box));
+                        } else {
+                            iv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_clear));
+                        }
+                        layout.addView(vb);
+                    }
+                    attendHolder.vLayout.addView(v);
+                }
                 break;
             case CardContent.ACTIVITY:
                 ActivityModule activity = (ActivityModule) module;
                 ActivityViewHolder activityHolder = (ActivityViewHolder) holder;
+                activityHolder.vTitle.setText(activity.getTitle());
                 activityHolder.vContent.setText(activity.getContent());
                 break;
             case CardContent.GRADE:
                 GradeModule grade = (GradeModule) module;
                 GradeViewHolder gradeHolder = (GradeViewHolder) holder;
+                gradeHolder.vTitle.setText(grade.getTitle());
                 gradeHolder.vContent.setText(grade.getContent());
+                gradeHolder.vIcon.setImageDrawable(null);
+                url = grade.getIconUrl();
+                if (url == null) {
+                    break;
+                }
+                if (url.endsWith("pending")) {
+                    res = ContextCompat.getDrawable(context, R.drawable.ic_radio_button_unchecked);
+                    gradeHolder.vIcon.setImageDrawable(res);
+                } else if (url.endsWith("done")) {
+                    res = ContextCompat.getDrawable(context, R.drawable.ic_circle);
+                    gradeHolder.vIcon.setImageDrawable(res);
+                }
                 break;
             case CardContent.LOGIN:
                 LoginModule login = (LoginModule) module;
                 LoginViewHolder loginHolder = (LoginViewHolder) holder;
                 loginHolder.vText.setText(login.getContent());
-                String url = login.getImgUrl();
-                Drawable res;
+                url = login.getImgUrl();
                 loginHolder.vImg.setImageDrawable(null);
                 if (url.endsWith("welcome")) {
-                    res = ContextCompat.getDrawable(context, R.drawable.ic_done);
+                    res = ContextCompat.getDrawable(context, R.drawable.ic_free_breakfast);
                     Log.i("CARD UPDATE", url);
                     loginHolder.itemView.setOnClickListener(null);
                     loginHolder.vImg.setImageDrawable(res);
@@ -216,27 +257,36 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             vProgress = v.findViewById(R.id.login_progress);
         }
     }
+
     public static class AttendanceViewHolder extends RecyclerView.ViewHolder {
-        protected TextView vContent;
+        protected LinearLayout vLayout;
 
         public AttendanceViewHolder(View v) {
             super(v);
-            vContent = (TextView) v.findViewById(R.id.attendance_content);
+            vLayout = (LinearLayout) v.findViewById(R.id.attend_container);
         }
     }
+
     public static class GradeViewHolder extends RecyclerView.ViewHolder {
+        protected TextView vTitle;
+        protected ImageView vIcon;
         protected TextView vContent;
 
         public GradeViewHolder(View v) {
             super(v);
             vContent = (TextView) v.findViewById(R.id.grade_content);
+            vTitle = (TextView) v.findViewById(R.id.grade_title);
+            vIcon = (ImageView) v.findViewById(R.id.grade_icon);
         }
     }
+
     public static class ActivityViewHolder extends RecyclerView.ViewHolder {
+        protected TextView vTitle;
         protected TextView vContent;
 
         public ActivityViewHolder(View v) {
             super(v);
+            vTitle = (TextView) v.findViewById(R.id.activity_title);
             vContent = (TextView) v.findViewById(R.id.activity_content);
         }
     }

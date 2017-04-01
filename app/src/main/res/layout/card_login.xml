@@ -23,7 +23,8 @@
                 android:id="@+id/signin_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center">
 
                 <ProgressBar
                     android:id="@+id/login_progress"
@@ -51,10 +52,9 @@
                     android:id="@+id/login_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/supporting_text_bottom_padding"
-                    android:paddingLeft="@dimen/supporting_text_right_left_padding"
-                    android:paddingRight="@dimen/supporting_text_right_left_padding"
-                    android:paddingTop="@dimen/supporting_text_top_padding"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+
                     android:text="Click to login with your student ID and password to unlock student portal."
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/supporting_text" />

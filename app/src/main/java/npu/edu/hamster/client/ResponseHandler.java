@@ -10,6 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
 import npu.edu.hamster.MainRecyclerViewAdapter;
@@ -43,6 +47,7 @@ public class ResponseHandler extends JsonHttpResponseHandler {
     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
         Log.i("SUCCESS", "array returned");
         try {
+            Log.i("SUCCESS", Integer.toString(response.length()));
             JSONObject firstObject = response.getJSONObject(0);
             int type = module.getType();
             StringBuilder sb;
@@ -70,14 +75,58 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                     module = login;
                     break;
                 case CardContent.ATTENDANCE:
+                    Map<String,String> map=new HashMap<>();
                     AttendanceModule attend = (AttendanceModule) module;
-                    sb = new StringBuilder();
                     for (int i = 0; i < response.length(); i++) {
-                        String str =(String) response.get(i);
-                        sb.append(str);
+                        String title=response.getJSONObject(i).getString("title");
+                        String attends=response.getJSONObject(i).getString("attendance");
+                        map.put(title,attends);
                     }
-                    attend.setContent(sb.toString());
+                    attend.setAttendanceMap(map);
                     module = attend;
+                    break;
+                case CardContent.ACTIVITY:
+                    ActivityModule activity = (ActivityModule) module;
+                    long dateMilli = firstObject.getLong("due");
+                    Calendar cal = Calendar.getInstance();
+                    long dateNow = cal.getTimeInMillis();
+                    long diff = dateMilli - dateNow;
+
+                    cal.setTimeInMillis(dateMilli);
+                    cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+                    sb = new StringBuilder();
+                    int days = (int) (diff / (24 * 60 * 60 * 1000));
+                    if (days > 7) {
+                        sb.append("More than 1 week");
+                    } else {
+                        sb.append(days + " days left");
+                    }
+                    Log.i("COMING EVENT CARD", sb.toString());
+                    activity.setTitle("Due: "+firstObject.getString("title"));
+                    activity.setContent(sb.toString());
+                    module = activity;
+                    break;
+                case CardContent.GRADE:
+                    GradeModule grade = (GradeModule) module;
+                    Log.i("GRADE", "Got grades");
+                    sb = new StringBuilder();
+                    sb.append("Week ");
+                    sb.append(firstObject.getInt("week"));
+                    grade.setTitle(sb.toString());
+                    double points = (double) firstObject.get("points");
+                    double total = (double) firstObject.get("total");
+                    sb = new StringBuilder();
+                    sb.append(firstObject.getString("title"));
+                    sb.append(" ");
+                    sb.append(points + "/" + total);
+                    grade.setContent(sb.toString());
+                    if (Double.compare(points, 0.0) == 0) {
+                        grade.setIconUrl("pending");
+                    } else {
+                        grade.setIconUrl("done");
+                    }
+                    module = grade;
                     break;
                 default:
                     break;
