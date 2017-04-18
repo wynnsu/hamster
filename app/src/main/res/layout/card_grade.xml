@@ -44,14 +44,14 @@
             <ImageView
                 android:id="@+id/grade_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="12dp"
+                android:layout_height="14dp"
                 android:src="@drawable/ic_circle"
                 android:layout_marginLeft="8dp"
                 android:layout_gravity="center"/>
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:background="@color/colorBackground"
                 />

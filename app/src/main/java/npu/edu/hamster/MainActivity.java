@@ -34,6 +34,8 @@ import npu.edu.hamster.module.GradeModule;
 import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
 
+import static npu.edu.hamster.MainRecyclerViewAdapter.LOGIN_REQUEST;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainRecyclerViewAdapter.LOGIN_REQUEST && resultCode == MainRecyclerViewAdapter.LOGIN_SUCCESS) {
+        if (requestCode == LOGIN_REQUEST && resultCode == MainRecyclerViewAdapter.LOGIN_SUCCESS) {
             login.setImgUrl("login");
             String studentID = data.getStringExtra("id");
             String base64Password = data.getStringExtra("password");
@@ -180,17 +182,22 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Intent intent = new Intent(this, DrawerMenuInfoActivity.class);
         if (id == R.id.nav_about) {
-            // Handle the camera action
+            intent.putExtra("label", "about");
+            startActivity(intent);
         } else if (id == R.id.nav_class) {
-
+            intent.putExtra("label", "class");
+            startActivity(intent);
         } else if (id == R.id.nav_event) {
-
+            intent.putExtra("label", "event");
+            startActivity(intent);
         } else if (id == R.id.nav_mail) {
-
-        } else if (id == R.id.nav_sign_out) {
-
+            intent.putExtra("label", "mail");
+            startActivity(intent);
+        } else if (id == R.id.nav_map) {
+            Intent mapIntent = new Intent(this, MapsActivity.class);
+            startActivity(mapIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

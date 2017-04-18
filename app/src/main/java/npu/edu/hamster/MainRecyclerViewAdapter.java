@@ -91,9 +91,7 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             case CardContent.ATTENDANCE:
                 AttendanceModule attend = (AttendanceModule) module;
                 AttendanceViewHolder attendHolder = (AttendanceViewHolder) holder;
-                if (attendHolder.vLayout.getChildCount() > 0) {
-                    break;
-                }
+                int weekNo = attend.getCurrentWeek();
                 Map<String, String> map = attend.getAttendanceMap();
                 for (Map.Entry<String, String> entry : map.entrySet()) {
                     LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -102,17 +100,34 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     String key = entry.getKey();
                     String val = entry.getValue();
                     title.setText(key);
-                    LinearLayout layout = (LinearLayout) v.findViewById(R.id.attend_queue);
+                    TextView perc = (TextView) v.findViewById(R.id.attend_percentage);
+                    TextView stat = (TextView) v.findViewById(R.id.attend_status);
                     String[] attendList = val.split(" ");
-                    for (String s : attendList) {
-                        View vb = vi.inflate(R.layout.attendance_block, null);
-                        ImageView iv = (ImageView) vb.findViewById(R.id.attend_icon_view);
-                        if (s.equals("P")) {
-                            iv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_check_box));
-                        } else {
-                            iv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_clear));
+                    int total = attendList.length;
+                    int presents = 0;
+                    for (String str : attendList) {
+                        if (str.contains("P"))
+                            presents = presents + 1;
+                    }
+                    if (presents < total - 3) {
+                        perc.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                    } else {
+                        perc.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                    }
+                    perc.setText(presents + "/" + total);
+
+                    if (weekNo > attendList.length) {
+                        stat.setTextColor(ContextCompat.getColor(getContext(), R.color.colorGrey800));
+                        stat.setText("Not Checked");
+                    } else {
+                        String att=attendList[weekNo-1];
+                        if(att.contains("P")){
+                            stat.setText("Present");
+                            stat.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                        }else{
+                            stat.setText("Absent");
+                            stat.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
                         }
-                        layout.addView(vb);
                     }
                     attendHolder.vLayout.addView(v);
                 }

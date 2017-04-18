@@ -75,14 +75,17 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                     module = login;
                     break;
                 case CardContent.ATTENDANCE:
-                    Map<String,String> map=new HashMap<>();
+                    Map<String, String> map = new HashMap<>();
                     AttendanceModule attend = (AttendanceModule) module;
+                    int weekNo = -1;
                     for (int i = 0; i < response.length(); i++) {
-                        String title=response.getJSONObject(i).getString("title");
-                        String attends=response.getJSONObject(i).getString("attendance");
-                        map.put(title,attends);
+                        String title = response.getJSONObject(i).getString("title");
+                        String attends = response.getJSONObject(i).getString("attendance");
+                        map.put(title, attends);
+                        weekNo = response.getJSONObject(i).getInt("week");
                     }
                     attend.setAttendanceMap(map);
+                    attend.setCurrentWeek(weekNo);
                     module = attend;
                     break;
                 case CardContent.ACTIVITY:
@@ -103,7 +106,7 @@ public class ResponseHandler extends JsonHttpResponseHandler {
                         sb.append(days + " days left");
                     }
                     Log.i("COMING EVENT CARD", sb.toString());
-                    activity.setTitle("Due: "+firstObject.getString("title"));
+                    activity.setTitle("Due: " + firstObject.getString("title"));
                     activity.setContent(sb.toString());
                     module = activity;
                     break;

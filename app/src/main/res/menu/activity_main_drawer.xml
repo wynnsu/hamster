@@ -24,8 +24,8 @@
         <menu>
             <item
                 android:id="@+id/nav_mail"
-                android:icon="@drawable/ic_menu_contact_mail"
-                android:title="Send Mail" />
+                android:icon="@drawable/ic_menu_email"
+                android:title="Messages" />
         </menu>
     </item>
     <group android:checkableBehavior="single">

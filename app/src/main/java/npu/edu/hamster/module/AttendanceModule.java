@@ -10,6 +10,16 @@ import java.util.Map;
 public class AttendanceModule extends BaseModule {
     Map<String,String> attendanceMap=new HashMap<>();
 
+    public int getCurrentWeek() {
+        return currentWeek;
+    }
+
+    public void setCurrentWeek(int currentWeek) {
+        this.currentWeek = currentWeek;
+    }
+
+    int currentWeek;
+
     public Map<String, String> getAttendanceMap() {
         return attendanceMap;
     }

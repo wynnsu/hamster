@@ -12,25 +12,32 @@
     android:layout_marginRight="@dimen/card_margin_leftright"
     android:layout_marginTop="@dimen/card_margin_topbottom"
     card_view:cardBackgroundColor="@color/colorWhite"
-    cardview:cardUseCompatPadding="true"
     cardview:cardCornerRadius="@dimen/card_radius"
-    cardview:cardElevation="@dimen/card_elevation">
+    cardview:cardElevation="@dimen/card_elevation"
+    cardview:cardUseCompatPadding="true">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/attend_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:orientation="vertical"
-            android:paddingTop="24dp"
             android:paddingBottom="16dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:id="@+id/attend_container">
-
+            android:paddingTop="24dp"
+            android:weightSum="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Attendance"
+                    android:textColor="@color/colorGrey800"
+                    android:textSize="@dimen/supporting_text"
+                    android:layout_alignParentLeft="true"/>
 
         </LinearLayout>
     </RelativeLayout>
