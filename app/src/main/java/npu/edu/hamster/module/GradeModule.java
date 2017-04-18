@@ -5,8 +5,25 @@ package npu.edu.hamster.module;
  */
 
 public class GradeModule extends BaseModule {
+    protected String iconUrl;
+    protected String title;
     protected String content;
 
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getContent() {
         return content;

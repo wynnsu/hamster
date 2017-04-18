@@ -3,34 +3,35 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_menu_info"
+            android:title="About NPU" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:id="@+id/nav_map"
+            android:icon="@drawable/ic_menu_map"
+            android:title="Campus Map" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:id="@+id/nav_event"
+            android:icon="@drawable/ic_menu_event"
+            android:title="Academic Calendar" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_class"
+            android:icon="@drawable/ic_menu_school"
+            android:title="Class Schedule" />
     </group>
 
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_mail"
+                android:icon="@drawable/ic_menu_email"
+                android:title="Messages" />
         </menu>
     </item>
-
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_menu_power_settings_new"
+            android:title="Sign Out" />
+    </group>
 </menu>

@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import npu.edu.hamster.client.NPURestClient;
 import npu.edu.hamster.client.ResponseHandler;
@@ -33,10 +34,13 @@ import npu.edu.hamster.module.GradeModule;
 import npu.edu.hamster.module.LoginModule;
 import npu.edu.hamster.module.NewsModule;
 
+import static npu.edu.hamster.MainRecyclerViewAdapter.LOGIN_REQUEST;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     ArrayList<BaseModule> moduleList;
+    ArrayList<BaseModule> removedList;
     private RecyclerView mainRecyclerView;
     private View mProgressView;
     private EventModule event;
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity
         isLogin = false;
         mainRecyclerView = (RecyclerView) findViewById(R.id.main_recycler);
         moduleList = new ArrayList<>();
+        removedList = new ArrayList<>();
         mProgressView = findViewById(R.id.main_progress);
 
         showProgress(true);
@@ -64,10 +69,10 @@ public class MainActivity extends AppCompatActivity
         event = new EventModule();
         news = new NewsModule();
         login = new LoginModule();
-        attend=new AttendanceModule();
-        grade=new GradeModule();
-        activity=new ActivityModule();
-        course=new CourseModule();
+        attend = new AttendanceModule();
+        grade = new GradeModule();
+        activity = new ActivityModule();
+        course = new CourseModule();
         adapter = new MainRecyclerViewAdapter(this, moduleList);
 
         mainRecyclerView.setAdapter(adapter);
@@ -76,15 +81,16 @@ public class MainActivity extends AppCompatActivity
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
+                Collections.swap(moduleList, viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                adapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                if (viewHolder.getItemViewType() == 5) {
-
-                }
                 int position = viewHolder.getAdapterPosition();
+                BaseModule moduleRemoved = moduleList.get(position);
+                removedList.add(moduleRemoved);
                 moduleList.remove(position);
                 adapter.notifyItemRemoved(position);
                 adapter.notifyItemRangeChanged(position, moduleList.size());
@@ -96,16 +102,6 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -128,7 +124,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainRecyclerViewAdapter.LOGIN_REQUEST && resultCode == MainRecyclerViewAdapter.LOGIN_SUCCESS) {
+        if (requestCode == LOGIN_REQUEST && resultCode == MainRecyclerViewAdapter.LOGIN_SUCCESS) {
             login.setImgUrl("login");
             String studentID = data.getStringExtra("id");
             String base64Password = data.getStringExtra("password");
@@ -138,10 +134,10 @@ public class MainActivity extends AppCompatActivity
             adapter.notifyItemChanged(moduleList.indexOf(login));
             moduleList.add(activity);
             moduleList.add(grade);
-//            moduleList.add(attend);
-            NPURestClient.get("student/"+studentID+"/activity/coming",null,new ResponseHandler(this,activity,moduleList.indexOf(activity),adapter));
-            NPURestClient.get("student/"+studentID+"/grade/latest",null,new ResponseHandler(this,grade,moduleList.indexOf(grade),adapter));
-//            NPURestClient.get("student/"+studentID+"/attendance",null,new ResponseHandler(this,attend,moduleList.indexOf(attend),adapter));
+            moduleList.add(attend);
+            NPURestClient.get("student/" + studentID + "/activity/coming", null, new ResponseHandler(this, activity, moduleList.indexOf(activity), adapter));
+            NPURestClient.get("student/" + studentID + "/activity/latest", null, new ResponseHandler(this, grade, moduleList.indexOf(grade), adapter));
+            NPURestClient.get("student/" + studentID + "/attendance", null, new ResponseHandler(this, attend, moduleList.indexOf(attend), adapter));
             adapter.notifyDataSetChanged();
         }
     }
@@ -171,8 +167,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_reset) {
+            Collections.reverse(removedList);
+            moduleList.addAll(removedList);
+            removedList.clear();
+            adapter.notifyDataSetChanged();
         }
 
         return super.onOptionsItemSelected(item);
@@ -183,19 +182,22 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        Intent intent = new Intent(this, DrawerMenuInfoActivity.class);
+        if (id == R.id.nav_about) {
+            intent.putExtra("label", "about");
+            startActivity(intent);
+        } else if (id == R.id.nav_class) {
+            intent.putExtra("label", "class");
+            startActivity(intent);
+        } else if (id == R.id.nav_event) {
+            intent.putExtra("label", "event");
+            startActivity(intent);
+        } else if (id == R.id.nav_mail) {
+            intent.putExtra("label", "mail");
+            startActivity(intent);
+        } else if (id == R.id.nav_map) {
+            Intent mapIntent = new Intent(this, MapsActivity.class);
+            startActivity(mapIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

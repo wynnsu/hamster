@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:id="@+id/attend_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginRight="16dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.59">
+        <TextView
+            android:id="@+id/attend_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cs570b"
+            android:textSize="@dimen/subtext"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/attend_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Present"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/normal_text"
+            android:paddingTop="@dimen/primary_text_top_padding"
+            android:paddingBottom="@dimen/primary_text_bottom_padding"
+            android:paddingLeft="@dimen/primary_text_right_left_padding"
+            android:paddingRight="@dimen/primary_text_right_left_padding"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:id="@+id/attend_percentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="15/15"
+            android:layout_alignParentRight="true"
+            android:textAlignment="viewEnd"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/supporting_text"
+            android:paddingTop="@dimen/supporting_text_top_padding"
+            />
+    </RelativeLayout>
+</FrameLayout>

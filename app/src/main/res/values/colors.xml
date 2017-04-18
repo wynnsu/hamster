@@ -7,4 +7,6 @@
     <color name="colorBlack">#212121</color>
     <color name="colorWhite">#fafafa</color>
     <color name="colorBackground">#DCDCDC</color>
+    <color name="colorYellow">#ffd740</color>
+    <color name="colorGrey800">#424242</color>
 </resources>
